@@ -12,7 +12,7 @@ const port = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
   lawProject.find().then((projects) => {
-    res.send(projects);
+    res.send(JSON.stringify(projects, undefined, 2));
   }, (e) => {
     res.status(400).send(e);
   });
