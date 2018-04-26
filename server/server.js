@@ -26,7 +26,7 @@ fs.createReadStream('expedientes.csv')
       type: data.Tipo,
       origin: data.Origen,
       date: data['Fec. Ing. Mesa Entrada\t'],
-      extract: data.Extracto,
+      extract: data.Extracto
     });
     project.save().then((doc) => {
       console.log(JSON.stringify(project, undefined, 2));
