@@ -38,7 +38,7 @@ app.get('/:id', (req, res) => {
 });
 
 // updates db from csv file
-fs.createReadStream('expedientes.csv')
+/*fs.createReadStream('expedientes.csv')
   .pipe(csv())
   .on('data', (data) => {
     var project = new lawProject({
@@ -53,7 +53,7 @@ fs.createReadStream('expedientes.csv')
     }, (e) => {
       console.log(e);
     });
-  });
+  });*/
 
   app.listen(port, () => {
     console.log(`Started on port ${port}`);
