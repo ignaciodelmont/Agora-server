@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 
 // GET by Id a single project
 app.get('/:id', (req, res) => {
-  const id = req.params.id;
+  var id = req.params.id;
   if (!ObjectID.isValid(id)) {
     return res.status(404).send();
   }
@@ -37,24 +37,40 @@ app.get('/:id', (req, res) => {
   });
 });
 
-// updates db from csv file
-/*fs.createReadStream('expedientes.csv')
-  .pipe(csv())
-  .on('data', (data) => {
-    var project = new lawProject({
-      caseFileNumber: data['Numero Expediente'],
-      type: data.Tipo,
-      origin: data.Origen,
-      date: data['Fec. Ing. Mesa Entrada\t'],
-      extract: data.Extracto
-    });
-    project.save().then((doc) => {
-      console.log(JSON.stringify(project, undefined, 2));
-    }, (e) => {
-      console.log(e);
-    });
-  });*/
+// DELETE by Id a single project
+app.delete('/:id', (req, res) => {
+  var id = req.params.id;
+  if(!ObjectID.isValid(id))
+    return res.status(404).send();
 
+  lawProject.findByIdAndRemove(id).then((todo) => {
+    if (!todo)
+      return res.status(404).send();
+
+    res.status(200).send();
+    console.log(todo);
+  },(e) => res.status(400).send());
+});
+// updates db from csv file
+// fs.createReadStream('expedientes.csv')
+// .pipe(csv())
+// .on('data', (data) => {
+//   var project = new lawProject({
+//     caseFileNumber: data['Numero Expediente'],
+//     type: data.Tipo,
+//     origin: data.Origen,
+//     date: data['Fec. Ing. Mesa Entrada\t'],
+//     extract: data.Extracto
+//   });
+//   project.save().then((doc) => {
+//     console.log(JSON.stringify(project, undefined, 2));
+//   }, (e) => {
+//     console.log(e);
+//   });
+// });
+
+
+// Listening
   app.listen(port, () => {
     console.log(`Started on port ${port}`);
   });
