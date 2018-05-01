@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-var lawProject = mongoose.model('Projects', {
+var LawProject = mongoose.model('Projects', {
   caseFileNumber: {
     type: String,
     required: true,
@@ -33,7 +33,10 @@ var lawProject = mongoose.model('Projects', {
   against: {
     type: Number,
     default: 0
+  },
+  tags: {
+    type: [String]
   }
 });
 
-module.exports = {lawProject};
+module.exports = {LawProject};
