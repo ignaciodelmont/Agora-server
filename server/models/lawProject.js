@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-var LawProject = mongoose.model('Projects', {
+var lawProjectSchema = new Schema({
   caseFileNumber: {
     type: String,
     required: true,
@@ -37,6 +38,7 @@ var LawProject = mongoose.model('Projects', {
   tags: {
     type: [String]
   }
-});
+})
+var LawProject = mongoose.model('Projects', lawProjectSchema);
 
 module.exports = {LawProject};

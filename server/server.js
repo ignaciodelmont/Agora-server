@@ -9,7 +9,7 @@ const _ = require('lodash');
 const {mongoose} = require('./db/mongoose');
 const {LawProject} = require('./models/lawProject');
 const {User}  = require('./models/user');
-
+const {authenticate} = require('./middleware/authenticate');
 var app = express();
 app.use(bodyParser.json());
 const port = process.env.PORT || 3000;
@@ -81,6 +81,8 @@ app.patch('/projects/:id/:vote', (req, res) => {
   });
 
 });
+
+
 // updates db from csv file
 // fs.createReadStream('expedientes.csv')
 // .pipe(csv())
@@ -116,6 +118,9 @@ app.post('/users', (req, res) => {
   });
 });
 
+app.get('/users/me', authenticate, (req, res) => {
+  res.send(req.user);
+});
 // Listening
   app.listen(port, () => {
     console.log(`Started on port ${port}`);
