@@ -3,15 +3,24 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const express = require('express');
 const bodyParser = require('body-parser');
-const {ObjectID} = require('mongodb');
+const myLoggers = require('log4js'); //for logging info, errors, etc. into a log file
+const { ObjectID } = require('mongodb');
 const _ = require('lodash');
+
 // local requires
-const {mongoose} = require('./db/mongoose');
-const {LawProject} = require('./models/lawProject');
-const {User}  = require('./models/user');
+const { mongoose } = require('./db/mongoose');
+const { LawProject } = require('./models/lawProject');
+const { User }  = require('./models/user');
+
+myLoggers.configure({
+	appenders: { mylogger: { type:"file", filename: "log" } },
+	categories: { default: { appenders:["mylogger"], level:"ALL" } }
+});
+const logger = myLoggers.getLogger("default");
 
 var app = express();
-app.use(bodyParser.json());
+app.use(bodyParser.json()); //to get JOTAson
+app.use(bodyParser.urlencoded({ extended: true })); //to get good old httpPost parameters
 const port = process.env.PORT || 3000;
 
 // /projects -------------------------------------------------------------------
@@ -117,6 +126,6 @@ app.post('/users', (req, res) => {
 });
 
 // Listening
-  app.listen(port, () => {
-    console.log(`Started on port ${port}`);
-  });
+app.listen(port, () => {
+	console.log(`Started on port ${port}`);
+});
