@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 var Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
@@ -38,7 +39,7 @@ var UserSchema = new Schema({
     type: String,
     required: true,
     validate: {
-      validator: (value) => validator.isByteLength(value, {min: 8, max: 16})
+      validator: (value) => validator.isByteLength(value, {min: 8, max: undefined})
     },
     message: '{VALUE} is not a valid password'
   },
@@ -89,6 +90,20 @@ UserSchema.statics.findByToken = function (token) {
   });
 };
 
+UserSchema.pre('save', function (next) {
+  var user = this;
+
+  if (user.isModified('password')) {
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(user.password, salt, (err, hash) => {
+        user.password = hash;
+        next();
+      });
+    });
+  } else {
+    next();
+  }
+});
 var User = mongoose.model('Users', UserSchema);
 
 module.exports = {User};
