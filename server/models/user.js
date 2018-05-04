@@ -3,6 +3,8 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
+
+const {LawProject} = require('./lawProject');
 var Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
@@ -52,6 +54,15 @@ var UserSchema = new Schema({
       type: String,
       required: true
     }
+  }],
+  votes: [{
+    projectId: {
+      type: mongoose.Schema.Types.ObjectId,
+      unique: true
+    },
+    vote: {
+      type: String
+    }
   }]
 });
 
@@ -73,6 +84,54 @@ UserSchema.methods.generateAuthToken = function() { // can't user arrow function
   });
 };
 
+UserSchema.methods.removeToken = function (token) {
+  var user = this;
+
+  return user.update({
+    $pull: {
+      tokens: {token}
+    }
+  });
+};
+
+UserSchema.methods.updateVote = function (data) {
+  var user = this;
+  // look for every vote that matches the request
+  const result = user.votes.filter( values => (values.projectId == data.id));
+  // returns a promise to continue the flow at server.js
+  // the promise considers 3 cases,vote doesn't exist, vote already exists or vote is changed
+  // any wrong result will reject the promise to send a bad request at server.js
+  return new Promise((resolve, reject) => {
+    if (result.length == 0) {
+      LawProject.findByIdAndUpdate(data.id, {$inc: {[data.vote]: 1}}, {new: true}).then((project) => {
+        // to send a language variable as field it's necessary to place it between []
+        // (in this case data.vote, switches between favor and against values)
+        if (!project) {
+          reject();
+        }
+        user.votes = user.votes.concat([{'projectId': data.id, 'vote': data.vote}]);
+        user.save().then((user) => resolve(user)).catch((e) => reject());
+      }).catch((e) => {
+        reject()
+      });
+    } else if (result[0].vote == data.vote) {
+      resolve(user);
+    } else {
+      LawProject.findByIdAndUpdate(data.id, {$inc: {[data.vote]: 1, [result[0].vote]: -1}}, {new: true}).then((project) => {
+        if (!project) {
+          reject();
+        }
+        user.votes = user.votes.filter( values => (values.projectId != data.id)).concat({'projectId': data.id, 'vote': data.vote});
+        user.save().then((user) => resolve(user)).catch((e) => {
+          reject()
+        });
+      }).catch((e) => {
+        reject()
+      });
+    }
+  });
+}
+
 UserSchema.statics.findByCredentials = function (email, password) {
   var User = this;
 
@@ -93,15 +152,6 @@ UserSchema.statics.findByCredentials = function (email, password) {
   });
 }
 
-UserSchema.methods.removeToken = function (token) {
-  var user = this;
-
-  return user.update({
-    $pull: {
-      tokens: {token}
-    }
-  });
-};
 
 UserSchema.statics.findByToken = function (token) {
   var User = this;

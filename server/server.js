@@ -61,21 +61,19 @@ app.delete('/projects/:id', (req, res) => {
 
 // PATCH by Id a single project
 // Ex: domain/projects/5adfe95d3a49cb56a269b195/favor or domain/projects/5adfe95d3a49cb56a269b195/against
-app.patch('/projects/:id/:vote', (req, res) => {
+app.patch('/projects/:id/:vote', authenticate, (req, res) => {
   var data = {
     "id": req.params.id,
     "vote": req.params.vote
   };
+  var user = req.user;
+
   if (!ObjectID.isValid(data.id) || data.vote != 'favor' && data.vote != 'against')
     return res.status(404).send();
 
-  LawProject.findByIdAndUpdate(data.id, {$inc: {[data.vote]: 1}}, {new: true}).then((project) => {
-    // to send a language variable as field it's necessary to place it between []
-    // (in this case data.vote, switches between favor and against values)
-    if (!project)
-      return res.status(404).send();
-
-    res.status(200).send({project});
+  user.updateVote(data).then((user) => {
+    console.log(user);
+    res.status(200).send();
   }).catch((e) => {
     res.status(400).send();
   });
@@ -128,7 +126,7 @@ app.post('/users/login', (req, res) => {
       res.header('x-auth', token).send(user);
     });
   }).catch((e) => {
-    re.status(400).send();
+    res.status(400).send();
   });
 });
 
