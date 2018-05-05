@@ -10,8 +10,9 @@ const {mongoose} = require('./db/mongoose');
 const {LawProject} = require('./models/lawProject');
 const {User}  = require('./models/user');
 const {authenticate} = require('./middleware/authenticate');
+const logger = require('./middleware/logger');
 var app = express();
-app.use(bodyParser.json());
+app.use([bodyParser.json(),logger]);
 const port = process.env.PORT || 3000;
 
 // /projects -------------------------------------------------------------------
