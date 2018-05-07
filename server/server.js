@@ -118,6 +118,7 @@ app.post('/users', (req, res) => {
   });
 });
 
+// POST /users/login
 // Ex: domain/users (body = {email, password})
 app.post('/users/login', (req, res) => {
   var body = _.pick(req.body, ['email', 'password']);
@@ -131,10 +132,12 @@ app.post('/users/login', (req, res) => {
   });
 });
 
+// GET user
 app.get('/users/me', authenticate, (req, res) => {
   res.send(req.user);
 });
 
+// DELETE user's token
 app.delete('/users/me/token', authenticate, (req, res) => {
   req.user.removeToken(req.token).then(() => {
     res.status(200).send();
@@ -142,6 +145,20 @@ app.delete('/users/me/token', authenticate, (req, res) => {
     res.staus(400).send();
   })
 });
+
+// GET all user's votes
+app.get('/users/me/myVotes', authenticate, (req, res) => {
+  var user = req.user;
+  var votesId = (user.votes).map( voteId => voteId.projectId);
+  console.log(votesId);
+
+  LawProject.find({_id: {$in: votesId}}).then((project) => {
+    res.status(200).send(project);
+  }).catch((e) => {
+    res.status(404).send();
+  });
+
+})
 
 // Listening -------------------------------------------------------------------
 app.listen(port, () => {

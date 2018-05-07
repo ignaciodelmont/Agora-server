@@ -62,7 +62,7 @@ async function snippet (min, max) {
         } else {
           var date = "";
         }
-        // agarra el texto que sigue (resumen propuesta)
+
 
         var extract = body[i].getElementsByClassName('dp-texto')[0].textContent;
         if (extract != undefined) {
@@ -70,13 +70,13 @@ async function snippet (min, max) {
         } else {
           extract = "";
         }
-        //agarra el link para acceder al texto completo
+
         if (body[i].getElementsByTagName('a')[0] != undefined) {
           var link = body[i].getElementsByTagName('a')[0].href;
         } else {
           var link = "";
         }
-        // abre el link y busca los elementos dentro del link
+
         var projectObj = {
           startedAt,
           caseFile,
