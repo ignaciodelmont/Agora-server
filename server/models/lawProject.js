@@ -2,30 +2,35 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 var lawProjectSchema = new Schema({
-  caseFileNumber: {
+  startedAt: {
+    type: String,
+    required: true,
+    minlength:1
+  },
+  caseFile: {
     type: String,
     required: true,
     minlength: 1
   },
-  type: {
+  publishedAt: {
     type: String,
-    required: true,
-    minlength:1
-  },
-  origin: {
-    type: String,
-    required: true,
-    minlength:1
   },
   date: {
     type: String,
-    required: true,
-    minlength:1
   },
   extract: {
     type: String,
     required: true,
     minlength:1
+  },
+  year: {
+    type: Number
+  },
+  month: {
+    type: Number
+  },
+  day: {
+    type: Number
   },
   favor: {
     type: Number,

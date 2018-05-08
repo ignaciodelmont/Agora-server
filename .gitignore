@@ -1,3 +1,5 @@
 node_modules/
 playground/
-data.json
+resources/data.json
+resources/dbData.json
+resources/testData.json
