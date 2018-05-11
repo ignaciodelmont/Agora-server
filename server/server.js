@@ -27,6 +27,14 @@ hbs.registerPartials(path.join(__dirname, '../views/partials'));
 hbs.registerHelper('getCurrentYear', () => {
   return new Date().getFullYear();
 });
+
+hbs.registerHelper('loadMore', () => {
+  return LawProject.find().skip(10).limit(10).then((projects) => {
+    resolve(projects);//JSON.stringify(projects, undefined, 2);
+  }, (e) => {
+    return "Bye";
+  });
+});
 // server log
 app.use((req, res, next) => {
   var now = new Date().toString();
