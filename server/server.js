@@ -5,6 +5,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
 const _ = require('lodash');
+const hbs = require('hbs');
+const path = require('path');
 // local requires
 const {mongoose} = require('./db/mongoose');
 const {LawProject} = require('./models/lawProject');
@@ -15,12 +17,41 @@ var app = express();
 app.use([bodyParser.json(),logger]);
 const port = process.env.PORT || 3000;
 
+
+// HBS
+// Partials register
+app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, '../views'));
+hbs.registerPartials(path.join(__dirname, '../views/partials'));
+// Helpers register
+hbs.registerHelper('getCurrentYear', () => {
+  return new Date().getFullYear();
+});
+// server log
+app.use((req, res, next) => {
+  var now = new Date().toString();
+  var log = `${now}: ${req.method} ${req.url}`;
+
+  console.log(log);
+  fs.appendFile('server.log', log + '\n', (err) => {
+    if (err) {
+      console.log('Unable to append to server.log');
+    }
+  });
+
+  next();
+});
 // /projects -------------------------------------------------------------------
 
+app.get('/', (req, res) => {
+  res.render('index.hbs');
+}, (e) => {
+  res.status(400).send();
+});
 // GET every single law project
 // Ex: domain/projects
 app.get('/projects', (req, res) => {
-  LawProject.find().then((projects) => {
+  LawProject.find().limit(20).then((projects) => {
     res.send(projects);
   }, (e) => {
     res.status(400).send(e);
@@ -82,23 +113,6 @@ app.patch('/projects/:id/:vote', authenticate, (req, res) => {
 });
 
 
-// updates db from csv file
-// fs.createReadStream('expedientes.csv')
-// .pipe(csv())
-// .on('data', (data) => {
-//   var project = new LawProject({
-//     caseFileNumber: data['Numero Expediente'],
-//     type: data.Tipo,
-//     origin: data.Origen,
-//     date: data['Fec. Ing. Mesa Entrada\t'],
-//     extract: data.Extracto
-//   });
-//   project.save().then((doc) => {
-//     console.log(JSON.stringify(project, undefined, 2));
-//   }, (e) => {
-//     console.log(e);
-//   });
-// });
 
 // /users ----------------------------------------------------------------------
 
@@ -134,7 +148,9 @@ app.post('/users/login', (req, res) => {
 
 // GET user
 app.get('/users/me', authenticate, (req, res) => {
-  res.send(req.user);
+  res.render('user.hbs',{
+    user: req.user
+  });
 });
 
 // DELETE user's token
