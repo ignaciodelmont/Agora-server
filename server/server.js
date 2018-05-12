@@ -14,7 +14,14 @@ const {User}  = require('./models/user');
 const {authenticate} = require('./middleware/authenticate');
 const logger = require('./middleware/logger');
 var app = express();
+
 app.use([bodyParser.json(),logger]);
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 const port = process.env.PORT || 3000;
 
 
@@ -67,7 +74,7 @@ app.get('/projects', (req, res) => {
 });
 
 // GET by Id a single project
-// Ex: /projects/domain/5adfe95d3a49cb56a269b195
+// Ex: domain/projects/5adfe95d3a49cb56a269b195
 app.get('/projects/:id', (req, res) => {
   var id = req.params.id;
   if (!ObjectID.isValid(id)) {
