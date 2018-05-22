@@ -42,8 +42,11 @@ var lawProjectSchema = new Schema({
   },
   tags: {
     type: [String]
+  },
+  link: {
+    type: String
   }
-})
+});
 var LawProject = mongoose.model('Projects', lawProjectSchema);
 
 module.exports = {LawProject};
