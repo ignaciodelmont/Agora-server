@@ -57,12 +57,10 @@ var UserSchema = new Schema({
   }],
   votes: [{
     projectId: {
-      type: mongoose.Schema.Types.ObjectId,
-      default: ""
+      type: mongoose.Schema.Types.ObjectId
     },
     vote: {
-      type: String,
-      default: ""
+      type: String
     }
   }]
 });
