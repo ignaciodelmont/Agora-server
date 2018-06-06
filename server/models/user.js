@@ -66,7 +66,7 @@ UserSchema.methods.toJSON = function () {
   var user = this;
   var userObject = user.toObject();
 
-  return _.pick(userObject, ['_id', 'email']);
+  return _.pick(userObject, ['_id', 'email', 'firstName', 'middleName', 'lastName', 'idNumber']);
 }
 UserSchema.methods.generateAuthToken = function() { // can't use arrow function, there's no binding for "this"
   var user = this;
