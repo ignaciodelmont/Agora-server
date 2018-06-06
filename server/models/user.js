@@ -68,7 +68,7 @@ UserSchema.methods.toJSON = function () {
 
   return _.pick(userObject, ['_id', 'email']);
 }
-UserSchema.methods.generateAuthToken = function() { // can't user arrow function, there's no binding for "this"
+UserSchema.methods.generateAuthToken = function() { // can't use arrow function, there's no binding for "this"
   var user = this;
   var access = 'auth';
   var token = jwt.sign({_id: user._id.toHexString(), access}, 'drPatetta').toString();

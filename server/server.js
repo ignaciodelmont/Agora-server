@@ -136,17 +136,40 @@ app.patch('/projects/:id/:vote', authenticate, (req, res) => {
 // POST /users
 // Ex: domain/users (body = {email, password, firstName, middleName, lastName, idNumber})
 app.post('/users', (req, res) => {
+  var userExists = false;
   var body = _.pick(req.body, ['email','password','firstName','middleName','lastName','idNumber']);
   console.log(req.body);
   var user = new User(body);
+  User.findOne({email: body.email})
+    .then((data) => {
+      if (data) {
+        userExists = true;
+        res.status(400).send("Email already registered!");
+      } else {
+        console.log("new Email is OK");
+      }
+    })
+    .catch((e) => console.log(e));
+  User.findOne({idNumber: body.idNumber})
+    .then((data) => {
+      if (data) {
+        userExists = true;
+        res.status(400).send("Id Number already registered!")
+      } else {
+        console.log("new ID Number is OK");
+      }
+    })
+    .catch((e) => console.log(e));
 
-  user.save().then(() => {
-    return user.generateAuthToken();
-  }).then((token) => {
-    res.header('x-auth', token).send(user);
-  }).catch((e) => {
-    res.status(400).send(e);
-  });
+  if (!userExists) {
+    user.save().then(() => {
+      return user.generateAuthToken();
+    }).then((token) => {
+      res.header('x-auth', token).send(user);
+    }).catch((e) => {
+      res.status(400).send(e);
+    });
+  }
 });
 
 // POST /users/login
