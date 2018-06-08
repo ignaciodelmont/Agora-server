@@ -19,7 +19,6 @@ var UserSchema = new Schema({
   },
   idNumber: {
     type: String,
-    unique: true,
     validate: {
       validator: (value) => validator.isInt(value,{min: 10000000, max:100000000}),
       message: '{VALUE} is not a valid ID'

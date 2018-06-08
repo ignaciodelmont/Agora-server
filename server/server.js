@@ -150,17 +150,18 @@ app.post('/users', (req, res) => {
       }
     })
     .catch((e) => console.log(e));
-  User.findOne({idNumber: body.idNumber})
-    .then((data) => {
-      if (data) {
-        userExists = true;
-        res.status(400).send("Id Number already registered!")
-      } else {
-        console.log("new ID Number is OK");
-      }
-    })
-    .catch((e) => console.log(e));
-
+  if(body.idNumber) {
+    User.findOne({idNumber: body.idNumber})
+      .then((data) => {
+        if (data) {
+          userExists = true;
+          res.status(400).send("Id Number already registered!")
+        } else {
+          console.log("new ID Number is OK");
+        }
+      })
+      .catch((e) => console.log(e));
+    }
   if (!userExists) {
     user.save().then(() => {
       return user.generateAuthToken();
