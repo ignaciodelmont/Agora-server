@@ -33,6 +33,10 @@ var UserSchema = new Schema({
       message: '{VALUE} is not a valid email'
     }
   },
+  validated: {
+    type: Boolean,
+    default: false
+  },
   password: {
     type: String,
     required: true,

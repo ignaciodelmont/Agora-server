@@ -95,7 +95,7 @@ app.get('/projects/:id', (req, res) => {
 // DELETE by Id a single project
 // Ex: domain/projects/5adfe95d3a49cb56a269b195
 app.delete('/projects/:id', (req, res) => {
-  var id = req.params.id;
+
   if(!ObjectID.isValid(id))
     return res.status(404).send();
 
@@ -111,6 +111,9 @@ app.delete('/projects/:id', (req, res) => {
 // PATCH by Id a single project
 // Ex: domain/projects/5adfe95d3a49cb56a269b195/favor or domain/projects/5adfe95d3a49cb56a269b195/against
 app.patch('/projects/:id/:vote', authenticate, (req, res) => {
+  if (req.params.id) {
+    res.status(403).send();
+  }
   var data = {
     "id": req.params.id,
     "vote": req.params.vote

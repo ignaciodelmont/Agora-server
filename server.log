@@ -157,3 +157,6 @@ Fri Jun 08 2018 09:40:17 GMT-0300 (-03): POST /users
 Fri Jun 08 2018 09:40:21 GMT-0300 (-03): POST /users
 Fri Jun 08 2018 09:40:32 GMT-0300 (-03): POST /users
 Fri Jun 08 2018 09:41:12 GMT-0300 (-03): POST /users
+Fri Jun 08 2018 18:47:31 GMT-0300 (-03): PATCH /projects/5b1af899dc7db82e78d7457b%20/favor
+Fri Jun 08 2018 18:51:06 GMT-0300 (-03): PATCH /projects/5b1af899dc7db82e78d7457b/against
+Fri Jun 08 2018 18:53:12 GMT-0300 (-03): PATCH /projects/5b1af899dc7db82e78d7457b/favor
