@@ -47,6 +47,25 @@ var lawProjectSchema = new Schema({
     type: String
   }
 });
-var LawProject = mongoose.model('Projects', lawProjectSchema);
 
+lawProjectSchema.statics.loadProjects = function (loaded, limit) {
+  loaded = parseInt(loaded);
+  limit = parseInt(limit);
+  if (!loaded) {
+    loaded = 0;
+  }
+  if (!limit || limit > 100) {
+    limit = 20;
+  }
+
+  return new Promise((resolve, reject) => {
+    LawProject.find().skip(loaded).limit(limit)
+      .then((projects) => resolve(projects))
+      .catch((e) => reject(e));
+
+  });
+}
+
+
+var LawProject = mongoose.model('Projects', lawProjectSchema);
 module.exports = {LawProject};

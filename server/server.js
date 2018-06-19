@@ -66,13 +66,11 @@ app.get('/', (req, res) => {
   res.status(400).send();
 });
 // GET every single law project
-// Ex: domain/projects
-app.get('/projects', (req, res) => {
-  LawProject.find().limit(20).then((projects) => {
-    res.send(projects);
-  }, (e) => {
-    res.status(400).send(e);
-  });
+// Ex: domain/projects/loadedquantity(optional)/limit(optional)
+app.get('/projects/:loaded?/:limit?', (req, res) => {
+  LawProject.loadProjects(req.params.loaded, req.params.limit).then((projects) => {
+    res.status(200).send(projects);
+  }).catch((e) => res.status(400).send());
 });
 
 // GET by Id a single project
@@ -112,7 +110,7 @@ app.delete('/projects/:id', (req, res) => {
 // Ex: domain/projects/5adfe95d3a49cb56a269b195/favor or domain/projects/5adfe95d3a49cb56a269b195/against
 app.patch('/projects/:id/:vote', authenticate, (req, res) => {
   if (req.params.id) {
-    res.status(403).send();
+    res.status(400).send();
   }
   var data = {
     "id": req.params.id,
@@ -121,7 +119,7 @@ app.patch('/projects/:id/:vote', authenticate, (req, res) => {
   var user = req.user;
 
   if (!ObjectID.isValid(data.id) || data.vote != 'favor' && data.vote != 'against')
-    return res.status(404).send();
+    return res.status(400).send();
 
   user.updateVote(data).then((user) => {
     console.log(user);

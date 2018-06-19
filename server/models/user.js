@@ -111,7 +111,7 @@ UserSchema.methods.updateVote = function (data) {
         user.votes = user.votes.concat([{'projectId': data.id, 'vote': data.vote}]);
         user.save().then((user) => resolve(user)).catch((e) => reject());
       }).catch((e) => {
-        reject()
+        reject();
       });
     } else if (result[0].vote == data.vote) {
       resolve(user);
